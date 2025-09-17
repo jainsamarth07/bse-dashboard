@@ -754,7 +754,10 @@ class BSE:
         status: str = "Active",
     ) -> List[dict]:
         """
-        List all securities and their meta info like symbol code, ISIN code, industry, market cap, segment, group etc.
+        List securities and their meta info like symbol code, ISIN code, industry, market cap, segment, group etc.
+
+        .. NOTE::
+            The default parameters will list Group 'A' in the 'equity' segment with an 'active' status.
 
         :param industry: (Optional) Filter by industry name
         :type industry: str
