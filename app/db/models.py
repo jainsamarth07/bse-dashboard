@@ -26,7 +26,7 @@ import re
 from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
-from psycopg2.extras import Json
+from psycopg2.extras import Json, execute_values
 
 from app.db import get_conn, get_cursor
 
@@ -104,38 +104,44 @@ class StockStore:
 
     @classmethod
     def bulk_upsert(cls, stocks: list[dict]) -> int:
-        """Bulk upsert; returns number of affected rows."""
+        """Bulk upsert in a single round-trip; returns number of affected rows."""
         if not stocks:
             return 0
+        rows = [
+            (
+                s["scrip_code"], _txt(s, "scrip_name"),
+                _txt(s, "company_name"), _txt(s, "group"),
+                _txt(s, "industry"), _num(s, "market_cap"),
+                _txt(s, "face_value"), _txt(s, "isin"),
+                _txt(s, "segment"), _txt(s, "status"),
+            )
+            for s in stocks
+        ]
         with get_conn() as conn:
             with conn.cursor() as cur:
-                for s in stocks:
-                    cur.execute(
-                        """
-                        INSERT INTO stocks
-                            (scrip_code, scrip_name, company_name, grp, industry,
-                             market_cap, face_value, isin, segment, status, updated_at)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
-                        ON CONFLICT (scrip_code) DO UPDATE SET
-                            scrip_name = EXCLUDED.scrip_name,
-                            company_name = EXCLUDED.company_name,
-                            grp = EXCLUDED.grp,
-                            industry = EXCLUDED.industry,
-                            market_cap = EXCLUDED.market_cap,
-                            face_value = EXCLUDED.face_value,
-                            isin = EXCLUDED.isin,
-                            segment = EXCLUDED.segment,
-                            status = EXCLUDED.status,
-                            updated_at = NOW()
-                        """,
-                        (
-                            s["scrip_code"], _txt(s, "scrip_name"),
-                            _txt(s, "company_name"), _txt(s, "group"),
-                            _txt(s, "industry"), _num(s, "market_cap"),
-                            _txt(s, "face_value"), _txt(s, "isin"),
-                            _txt(s, "segment"), _txt(s, "status"),
-                        ),
-                    )
+                execute_values(
+                    cur,
+                    """
+                    INSERT INTO stocks
+                        (scrip_code, scrip_name, company_name, grp, industry,
+                         market_cap, face_value, isin, segment, status, updated_at)
+                    VALUES %s
+                    ON CONFLICT (scrip_code) DO UPDATE SET
+                        scrip_name = EXCLUDED.scrip_name,
+                        company_name = EXCLUDED.company_name,
+                        grp = EXCLUDED.grp,
+                        industry = EXCLUDED.industry,
+                        market_cap = EXCLUDED.market_cap,
+                        face_value = EXCLUDED.face_value,
+                        isin = EXCLUDED.isin,
+                        segment = EXCLUDED.segment,
+                        status = EXCLUDED.status,
+                        updated_at = NOW()
+                    """,
+                    rows,
+                    template="(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())",
+                    page_size=500,
+                )
             return len(stocks)
 
     @classmethod
@@ -322,37 +328,43 @@ class ResultCalendarStore:
 
     @classmethod
     def upsert_rows(cls, rows: list[dict]) -> int:
-        """Upsert calendar rows; returns number of changed rows."""
+        """Upsert calendar rows in a single round-trip; returns number of changed rows."""
         if not rows:
             return 0
 
-        changed = 0
+        values = []
+        for row in rows:
+            scrip_code = str(row.get("scrip_Code", "")).strip()
+            meeting_date = str(row.get("meeting_date", "")).strip()
+            short_name = str(row.get("short_name", "")).strip()
+            if not scrip_code or not meeting_date:
+                continue
+            values.append((
+                scrip_code, short_name, str(row.get("Long_Name", "")),
+                meeting_date, str(row.get("URL", "")),
+            ))
+
+        if not values:
+            return 0
+
         with get_conn() as conn:
             with conn.cursor() as cur:
-                for row in rows:
-                    scrip_code = str(row.get("scrip_Code", "")).strip()
-                    meeting_date = str(row.get("meeting_date", "")).strip()
-                    short_name = str(row.get("short_name", "")).strip()
-                    if not scrip_code or not meeting_date:
-                        continue
-
-                    cur.execute(
-                        """
-                        INSERT INTO result_calendar
-                            (scrip_code, short_name, long_name, meeting_date, url, created_at, updated_at)
-                        VALUES (%s, %s, %s, %s, %s, NOW(), NOW())
-                        ON CONFLICT (scrip_code, meeting_date, short_name) DO UPDATE SET
-                            long_name = EXCLUDED.long_name,
-                            url = EXCLUDED.url,
-                            updated_at = NOW()
-                        """,
-                        (
-                            scrip_code, short_name, str(row.get("Long_Name", "")),
-                            meeting_date, str(row.get("URL", "")),
-                        ),
-                    )
-                    changed += 1
-        return changed
+                execute_values(
+                    cur,
+                    """
+                    INSERT INTO result_calendar
+                        (scrip_code, short_name, long_name, meeting_date, url, created_at, updated_at)
+                    VALUES %s
+                    ON CONFLICT (scrip_code, meeting_date, short_name) DO UPDATE SET
+                        long_name = EXCLUDED.long_name,
+                        url = EXCLUDED.url,
+                        updated_at = NOW()
+                    """,
+                    values,
+                    template="(%s, %s, %s, %s, %s, NOW(), NOW())",
+                    page_size=500,
+                )
+        return len(values)
 
     @classmethod
     def get_all(cls, limit: int = 1000) -> list[dict]:
