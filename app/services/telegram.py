@@ -11,6 +11,7 @@ broker_links(symbol, scrip_code) → str
 from __future__ import annotations
 
 from datetime import datetime
+from html import escape as _html_escape
 from urllib.parse import quote
 
 import requests
@@ -84,21 +85,29 @@ def send_analysis(
 ) -> None:
     """Send a full analysis report to Telegram, chunking if necessary."""
     try:
+        # broker_links builds its own <a>/<b> tags from a sanitized symbol —
+        # safe as-is. company/pdf_link/analysis are free text (company names,
+        # BSE-supplied URLs, LLM output) and must be escaped before going into
+        # an HTML-parsed message, or a stray '<'/'>'/'&' breaks Telegram's parser.
         trade_links = broker_links(company, scrip_code) if scrip_code else ""
         MAX_LEN = 4_000
+
+        safe_company = _html_escape(company)
+        safe_pdf_link = _html_escape(pdf_link)
+        safe_analysis = _html_escape(analysis)
 
         mcap_str = f"\n<b>Market Cap:</b> ₹{market_cap:,.0f} Cr" if market_cap else ""
         header = (
             f"📊 <b>Financial Analysis Report</b>\n"
-            f"<b>Company:</b> {company}{mcap_str}\n"
-            f"<b>PDF:</b> {pdf_link}\n\n"
+            f"<b>Company:</b> {safe_company}{mcap_str}\n"
+            f"<b>PDF:</b> {safe_pdf_link}\n\n"
         )
 
-        if len(header) + len(analysis) + len(trade_links) <= MAX_LEN:
-            send_message(header + analysis + trade_links)
+        if len(header) + len(safe_analysis) + len(trade_links) <= MAX_LEN:
+            send_message(header + safe_analysis + trade_links)
         else:
             send_message(header)
-            chunks = [analysis[i : i + MAX_LEN] for i in range(0, len(analysis), MAX_LEN)]
+            chunks = [safe_analysis[i : i + MAX_LEN] for i in range(0, len(safe_analysis), MAX_LEN)]
             for idx, chunk in enumerate(chunks, 1):
                 if idx > 1:
                     chunk = f"<b>... (Part {idx})</b>\n" + chunk

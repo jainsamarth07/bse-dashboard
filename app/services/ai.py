@@ -127,6 +127,8 @@ def _call_groq(prompt_text: str) -> str | None:
         result = completion.choices[0].message.content
         if result:
             print(f"[{_ts()}] ✅ Analysis complete (Groq)")
+        else:
+            print(f"[{_ts()}] ⚠️  Groq returned an empty response — trying Gemini …")
         return result
     except Exception as exc:
         err = str(exc).lower()

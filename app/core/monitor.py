@@ -14,6 +14,7 @@ import os
 import sys
 import time
 from datetime import date, datetime, timezone, timedelta
+from html import escape as _html_escape
 
 from app.bse import BSE
 from app.config import Config
@@ -391,12 +392,14 @@ def _process_announcement(
     print(f"  ✅ {scrip} | ₹{market_cap:,.0f} Cr | {subject}")
 
     if not attach:
-        # No PDF — send a basic notification and return
+        # No PDF — send a basic notification and return.
+        # scrip/subject are raw BSE text (company names routinely contain
+        # '&', e.g. "M&M") and must be escaped before an HTML-parsed message.
         send_message(
             f"📢 <b>New BSE Result</b>\n"
-            f"<b>Company:</b> {scrip} (₹{market_cap:,.0f} Cr)\n"
-            f"<b>Subject:</b> {subject}\n"
-            f"<b>Date:</b> {date}\n"
+            f"<b>Company:</b> {_html_escape(scrip)} (₹{market_cap:,.0f} Cr)\n"
+            f"<b>Subject:</b> {_html_escape(subject)}\n"
+            f"<b>Date:</b> {_html_escape(date)}\n"
             f"<i>No attachment</i>"
         )
         return True
