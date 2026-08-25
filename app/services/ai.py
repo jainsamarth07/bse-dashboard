@@ -122,13 +122,17 @@ def _call_groq(prompt_text: str) -> str | None:
             ],
             model=Config.GROQ_MODEL,
             temperature=0.1,
-            max_tokens=2_048,
+            max_tokens=8_192,
         )
-        result = completion.choices[0].message.content
+        choice = completion.choices[0]
+        result = choice.message.content
         if result:
             print(f"[{_ts()}] ✅ Analysis complete (Groq)")
         else:
-            print(f"[{_ts()}] ⚠️  Groq returned an empty response — trying Gemini …")
+            print(
+                f"[{_ts()}] ⚠️  Groq returned an empty response "
+                f"(finish_reason={choice.finish_reason}) — trying Gemini …"
+            )
         return result
     except Exception as exc:
         err = str(exc).lower()
