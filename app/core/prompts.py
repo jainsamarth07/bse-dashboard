@@ -23,6 +23,17 @@ If Q1 (Jun quarter), use Jun 2025, Mar 2025, Jun 2024.
 If Q4 (Mar quarter), use Mar 2025, Dec 2024, Mar 2024.
 Use whatever dates are actually present in the PDF — do NOT assume fixed dates.
 
+**BUNDLED-FILING RULE:** Some filings combine more than one reporting period in
+a single document — most commonly a delayed/late Annual Audited result (year
+ended March) bundled together with the current quarter's regular Unaudited
+result, approved by the board on the same day. When the subject line or
+document body mentions more than one distinct period, always treat the
+CHRONOLOGICALLY MOST RECENT quarter-end date as the Latest Quarter (L.Q.) —
+ignore older annual/audited catch-up periods in favor of whichever quarter
+end is closest to today, since that is the period most relevant for spotting
+fresh trading signals. Extract L.Q./P.Q./S.Q.L.Y. figures from that most
+recent quarter's table specifically, not the older bundled period.
+
 **STEP 2: IDENTIFY COMPANY & UNIT**
 - **COMPANY NAME:** Extract from letterhead or title.
 - **REPORTING UNIT:** Detect the unit (₹ in crores / lakhs / millions).
@@ -155,12 +166,16 @@ def build_period_anchor(subject: str | None, news_date: str | None) -> str:
     """Build a ground-truth preamble anchoring the reporting period.
 
     Without this, the model has to infer the "latest quarter" purely from
-    table content in a long, multi-period PDF — different models can and do
-    pick different columns (observed: Gemini and Groq disagreeing on the
-    quarter for the same document, one correct, one hallucinated). BSE's own
-    announcement subject line usually states the period explicitly (e.g.
-    "RESULTS FOR 31.03.2026"), so pass it through as ground truth that
-    overrides anything ambiguous inside the PDF.
+    table content in a long PDF. Observed in testing: some filings genuinely
+    bundle two distinct result sets in one document (e.g. a delayed Annual
+    Audited result alongside the current quarter's regular Unaudited result,
+    approved by the board on the same day) — Gemini and Groq each correctly
+    read a different, both-legitimate section of the same STCINDIA filing
+    and reported different periods. Neither was wrong about what the PDF
+    said; the document itself was ambiguous about which period to lead with.
+    BSE's own subject line names the period(s) explicitly (e.g. "RESULTS FOR
+    31.03.2026"), so pass it through as ground truth, with an explicit
+    tie-breaker toward the most recent period when more than one is present.
     """
     if not subject and not news_date:
         return ""
@@ -175,9 +190,12 @@ def build_period_anchor(subject: str | None, news_date: str | None) -> str:
     return (
         "**GROUND TRUTH — REPORTING PERIOD ANCHOR (read this first):**\n"
         f"{hint}\n"
-        "Treat the period stated or implied in this subject line as the Latest "
-        "Quarter (L.Q.) — it takes precedence over any other date found inside "
-        "the PDF (comparative years, cover-page dates, unrelated tables, etc.). "
-        "If the subject line does not explicitly state a period, fall back to "
-        "inferring L.Q. from the table headers as described below.\n\n"
+        "Treat the period(s) stated or implied in this subject line as ground "
+        "truth — they take precedence over any other date found inside the PDF "
+        "(comparative years, cover-page dates, unrelated tables, etc.). If the "
+        "subject line names MORE THAN ONE period (e.g. a bundled Annual Audited "
+        "+ current-quarter Unaudited filing), use the CHRONOLOGICALLY MOST "
+        "RECENT one as the Latest Quarter (L.Q.) — see the BUNDLED-FILING RULE "
+        "below. If the subject line does not explicitly state a period, fall "
+        "back to inferring L.Q. from the table headers as described below.\n\n"
     )
