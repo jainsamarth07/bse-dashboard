@@ -43,6 +43,22 @@ def _set_clause(fields: dict, start_index: int = 1) -> tuple[str, list]:
     return clause, [fields[c] for c in cols]
 
 
+def _txt(d: dict, key: str, default: str = "") -> str:
+    """Like dict.get, but also coalesces an explicit None value to default.
+
+    BSE's API sometimes returns a field as null rather than omitting it —
+    plain .get(key, default) only substitutes default when the key is
+    absent, not when its value is None, which trips NOT NULL columns.
+    """
+    v = d.get(key)
+    return default if v is None else v
+
+
+def _num(d: dict, key: str, default: float = 0) -> float:
+    v = d.get(key)
+    return default if v is None else v
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # stocks  (was all_stocks)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -78,11 +94,11 @@ class StockStore:
                     updated_at = NOW()
                 """,
                 (
-                    stock["scrip_code"], stock.get("scrip_name", ""),
-                    stock.get("company_name", ""), stock.get("group", ""),
-                    stock.get("industry", ""), stock.get("market_cap", 0),
-                    stock.get("face_value", ""), stock.get("isin", ""),
-                    stock.get("segment", ""), stock.get("status", ""),
+                    stock["scrip_code"], _txt(stock, "scrip_name"),
+                    _txt(stock, "company_name"), _txt(stock, "group"),
+                    _txt(stock, "industry"), _num(stock, "market_cap"),
+                    _txt(stock, "face_value"), _txt(stock, "isin"),
+                    _txt(stock, "segment"), _txt(stock, "status"),
                 ),
             )
 
@@ -113,11 +129,11 @@ class StockStore:
                             updated_at = NOW()
                         """,
                         (
-                            s["scrip_code"], s.get("scrip_name", ""),
-                            s.get("company_name", ""), s.get("group", ""),
-                            s.get("industry", ""), s.get("market_cap", 0),
-                            s.get("face_value", ""), s.get("isin", ""),
-                            s.get("segment", ""), s.get("status", ""),
+                            s["scrip_code"], _txt(s, "scrip_name"),
+                            _txt(s, "company_name"), _txt(s, "group"),
+                            _txt(s, "industry"), _num(s, "market_cap"),
+                            _txt(s, "face_value"), _txt(s, "isin"),
+                            _txt(s, "segment"), _txt(s, "status"),
                         ),
                     )
             return len(stocks)
@@ -448,15 +464,15 @@ class FinancialResultStore:
                 RETURNING id
                 """,
                 (
-                    data.get("scrip_code", ""), data.get("scrip_name", ""),
-                    data.get("company_name", ""), data.get("market_cap", 0),
-                    data.get("news_date", ""), data.get("subject", ""),
-                    data.get("pdf_link", ""), data.get("raw_analysis", ""),
-                    data.get("company_name_extracted", ""), data.get("unit", ""),
-                    data.get("quarter", ""), Json(data.get("growth", {})),
-                    Json(data.get("absolute_numbers", {})), Json(data.get("margins", {})),
-                    data.get("signal", "NEUTRAL"), data.get("confidence", 0),
-                    data.get("ai_model", ""), data.get("extracted_via", ""),
+                    _txt(data, "scrip_code"), _txt(data, "scrip_name"),
+                    _txt(data, "company_name"), _num(data, "market_cap"),
+                    _txt(data, "news_date"), _txt(data, "subject"),
+                    _txt(data, "pdf_link"), _txt(data, "raw_analysis"),
+                    _txt(data, "company_name_extracted"), _txt(data, "unit"),
+                    _txt(data, "quarter"), Json(data.get("growth") or {}),
+                    Json(data.get("absolute_numbers") or {}), Json(data.get("margins") or {}),
+                    _txt(data, "signal", "NEUTRAL"), _num(data, "confidence"),
+                    _txt(data, "ai_model"), _txt(data, "extracted_via"),
                 ),
             )
             return str(cur.fetchone()["id"])
