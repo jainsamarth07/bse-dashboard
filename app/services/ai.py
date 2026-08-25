@@ -20,7 +20,7 @@ import requests
 from groq import Groq
 
 from app.config import Config
-from app.core.prompts import AI_SYSTEM_MESSAGE, FINANCIAL_ANALYSIS_PROMPT
+from app.core.prompts import AI_SYSTEM_MESSAGE, FINANCIAL_ANALYSIS_PROMPT, build_period_anchor
 from app.services.pdf import (
     detect_image_pages,
     extract_text,
@@ -222,8 +222,20 @@ def _call_gemini_vision(
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
-def analyze_pdf(pdf_path: str) -> tuple[str, str, str]:
+def analyze_pdf(
+    pdf_path: str,
+    *,
+    announcement_subject: str | None = None,
+    announcement_date: str | None = None,
+) -> tuple[str, str, str]:
     """Analyse a BSE result PDF and return (analysis_text, model_name, extracted_via).
+
+    announcement_subject/announcement_date (from the BSE announcement itself,
+    e.g. "... RESULTS FOR 31.03.2026") are passed through as a ground-truth
+    period anchor in the prompt — without it, the model has to infer the
+    reporting quarter purely from table content in a long multi-period PDF,
+    which different models can (and did, in testing) get wrong in different
+    ways for the same document.
 
     Decision tree
     -------------
@@ -258,7 +270,8 @@ def analyze_pdf(pdf_path: str) -> tuple[str, str, str]:
             return "Error: Scan/image-based PDF requires Vision fallback (currently disabled)", "", ""
 
     # ── Path B: text-based PDF → Groq first, then Gemini text ────────────────
-    prompt = f"{FINANCIAL_ANALYSIS_PROMPT}\n\n--- EXTRACTED PDF TEXT ---\n{pdf_text}"
+    period_anchor = build_period_anchor(announcement_subject, announcement_date)
+    prompt = f"{period_anchor}{FINANCIAL_ANALYSIS_PROMPT}\n\n--- EXTRACTED PDF TEXT ---\n{pdf_text}"
 
     result = _call_groq(prompt)
     if result:

@@ -149,3 +149,35 @@ AI_SYSTEM_MESSAGE = (
     "Always include both human-readable analysis AND the machine-readable "
     "UI_PAYLOAD JSON block."
 )
+
+
+def build_period_anchor(subject: str | None, news_date: str | None) -> str:
+    """Build a ground-truth preamble anchoring the reporting period.
+
+    Without this, the model has to infer the "latest quarter" purely from
+    table content in a long, multi-period PDF — different models can and do
+    pick different columns (observed: Gemini and Groq disagreeing on the
+    quarter for the same document, one correct, one hallucinated). BSE's own
+    announcement subject line usually states the period explicitly (e.g.
+    "RESULTS FOR 31.03.2026"), so pass it through as ground truth that
+    overrides anything ambiguous inside the PDF.
+    """
+    if not subject and not news_date:
+        return ""
+
+    parts = []
+    if subject:
+        parts.append(f'This filing was announced to BSE under the subject: "{subject}".')
+    if news_date:
+        parts.append(f"BSE recorded this announcement on {news_date}.")
+    hint = " ".join(parts)
+
+    return (
+        "**GROUND TRUTH — REPORTING PERIOD ANCHOR (read this first):**\n"
+        f"{hint}\n"
+        "Treat the period stated or implied in this subject line as the Latest "
+        "Quarter (L.Q.) — it takes precedence over any other date found inside "
+        "the PDF (comparative years, cover-page dates, unrelated tables, etc.). "
+        "If the subject line does not explicitly state a period, fall back to "
+        "inferring L.Q. from the table headers as described below.\n\n"
+    )

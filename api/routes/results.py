@@ -342,7 +342,11 @@ async def reprocess_result(doc_id: str, user=Depends(get_current_user)):
         raise HTTPException(502, "Failed to download PDF")
 
     try:
-        analysis, model = analyze_pdf(pdf_path)
+        analysis, model, extracted_via = analyze_pdf(
+            pdf_path,
+            announcement_subject=existing.get("subject", ""),
+            announcement_date=existing.get("news_date", ""),
+        )
         if analysis.startswith("Error:"):
             raise HTTPException(502, f"AI analysis failed: {analysis}")
 
@@ -366,6 +370,7 @@ async def reprocess_result(doc_id: str, user=Depends(get_current_user)):
             "signal": parsed.get("signal", "NEUTRAL"),
             "confidence": parsed.get("confidence", 0),
             "ai_model": model,
+            "extracted_via": extracted_via,
         })
 
         new_doc = FinancialResultStore.get_by_id(new_id)

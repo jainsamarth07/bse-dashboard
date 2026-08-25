@@ -414,7 +414,9 @@ def _process_announcement(
         return False
 
     try:
-        analysis, model, extracted_via = analyze_pdf(pdf_path)
+        analysis, model, extracted_via = analyze_pdf(
+            pdf_path, announcement_subject=subject, announcement_date=date
+        )
 
         if analysis.startswith("Error:"):
             lower = analysis.lower()

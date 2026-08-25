@@ -257,7 +257,11 @@ async def fetch_result(
         raise HTTPException(502, "Failed to download PDF")
 
     try:
-        analysis, model, extracted_via = analyze_pdf(pdf_path)
+        analysis, model, extracted_via = analyze_pdf(
+            pdf_path,
+            announcement_subject=announcement.get("NEWSSUB", ""),
+            announcement_date=announcement.get("NEWS_DT", ""),
+        )
         if analysis.startswith("Error:"):
             raise HTTPException(502, f"AI analysis failed: {analysis}")
 
