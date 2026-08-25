@@ -1,0 +1,30 @@
+# Backend build context (Dockerfile / Dockerfile.api use `context: .`)
+.git
+.github
+web/
+docs/
+sql/
+tests/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+
+# Misc local artifacts
+*.log
+*.xlsx
+document.json

@@ -1,0 +1,35 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# BSE India Result Monitor — Python dependencies
+# Install: pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── BSE API (local wrapper needs this) ───────────────────────────────────────
+mthrottle>=0.0.1
+requests>=2.31
+
+# ── PostgreSQL (sync driver — used by app.db / monitor / jobs) ───────────────
+psycopg2-binary>=2.9
+
+# ── AI providers ─────────────────────────────────────────────────────────────
+groq>=0.4
+google-generativeai>=0.5
+
+# ── PDF processing ────────────────────────────────────────────────────────────
+PyMuPDF>=1.24      # provides fitz
+Pillow>=10.0       # image rendering for Gemini Vision
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dotenv>=1.0  # loads .env file into environment
+
+# ── FastAPI Web API ───────────────────────────────────────────────────────────
+fastapi>=0.115
+uvicorn[standard]>=0.32
+python-multipart>=0.0.20
+asyncpg>=0.30       # async PostgreSQL driver
+bcrypt>=4.2         # password hashing
+PyJWT>=2.9          # JWT token handling
+cryptography>=43.0  # AES-256-GCM for broker key encryption
+httpx>=0.28         # async HTTP client for broker APIs
+pydantic[email]>=2.10
+pyotp>=2.9          # TOTP generation for Angel One
+growwapi>=1.0       # Official Groww Broker API Python package

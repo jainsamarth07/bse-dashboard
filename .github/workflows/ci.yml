@@ -1,0 +1,61 @@
+name: CI — Lint + Test + Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+
+jobs:
+  # ── Python backend ──────────────────────────────────────────────────────────
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pip install ruff pytest
+      - name: Lint (ruff)
+        run: ruff check app/ api/ jobs/
+      - name: Type-check (optional — add mypy if desired)
+        run: echo "TODO — add mypy or pyright"
+      - name: Unit tests
+        run: pytest tests/ -v --tb=short
+        env:
+          MONGODB_URI: ""
+          DATABASE_URL: ""
+
+  # ── Next.js frontend ────────────────────────────────────────────────────────
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  # ── Docker build smoke test ─────────────────────────────────────────────────
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f Dockerfile.api -t bse-api:ci .
+      - name: Build Web image
+        run: docker build -f web/Dockerfile -t bse-web:ci web/

@@ -1,0 +1,151 @@
+"""
+AI prompt templates used for financial result analysis.
+
+Kept in one place so they can be tweaked without touching any logic code.
+"""
+
+FINANCIAL_ANALYSIS_PROMPT = """
+**TASK: EXTRACT, CALCULATE, AND FORMAT FINANCIAL DATA (CONSOLIDATED BASIS)**
+
+You are given the text of a financial results PDF filed to BSE India. Your job is to
+extract the key numbers AND compute growth rates and margins.
+
+**STEP 1: AUTO-DETECT THE PERIODS**
+The document contains a table with multiple columns for different periods.
+Identify the THREE most relevant quarterly periods from the table headers:
+  - **Latest Quarter (L.Q.):** The most recent quarter ended date in the document.
+  - **Previous Quarter (P.Q.):** The quarter immediately before L.Q.
+  - **Same Quarter Last Year (S.Q.L.Y.):** The same quarter from the previous year.
+
+If the document is for Q3 (Dec quarter), use Dec 2025, Sep 2025, Dec 2024.
+If Q2 (Sep quarter), use Sep 2025, Jun 2025, Sep 2024.
+If Q1 (Jun quarter), use Jun 2025, Mar 2025, Jun 2024.
+If Q4 (Mar quarter), use Mar 2025, Dec 2024, Mar 2024.
+Use whatever dates are actually present in the PDF — do NOT assume fixed dates.
+
+**STEP 2: IDENTIFY COMPANY & UNIT**
+- **COMPANY NAME:** Extract from letterhead or title.
+- **REPORTING UNIT:** Detect the unit (₹ in crores / lakhs / millions).
+
+**STEP 3: DATA EXTRACTION**
+Read ONLY the **CONSOLIDATED** data (prefer consolidated over standalone).
+If only standalone is available, use standalone.
+
+Extract these line items for all three periods:
+1. **Revenue (R):** "Total Revenue from Operations" or "Total Income"
+2. **Net Profit (NP):** "Profit for the period (after tax)"
+3. **EBITDA (E):** Calculate as:
+   EBITDA = Profit before tax + Depreciation + Finance Costs - Other Income
+
+**STEP 4: COMPUTATIONS (round to 1 decimal)**
+- Q/Q Growth (%) = ((L.Q. - P.Q.) / |P.Q.|) × 100
+- Y/Y Growth (%) = ((L.Q. - S.Q.L.Y.) / |S.Q.L.Y.|) × 100
+- EBITDA Margin (%) = (EBITDA / Revenue) × 100
+- Net Profit Margin (%) = (Net Profit / Revenue) × 100
+
+**FINAL OUTPUT FORMAT (STRICTLY adhere to this — no commentary, no steps):**
+
+COMPANY NAME: <value>
+Unit: <value>
+Quarter: <L.Q. period, e.g. "Dec 2025" or "Sep 2025">
+
+GROWTH:
+
+Revenue:
+• Q/Q: <value>%
+• Y/Y: <value>%
+
+EBITDA:
+• Q/Q: <value>%
+• Y/Y: <value>%
+
+Net Profit:
+• Q/Q: <value>%
+• Y/Y: <value>%
+
+ABSOLUTE NUMBERS:
+
+Revenue:
+• Latest Quarter: <value>
+• Previous Quarter: <value>
+• Same Quarter Last Year: <value>
+
+EBITDA:
+• Latest Quarter: <value>
+• Previous Quarter: <value>
+• Same Quarter Last Year: <value>
+
+Net Profit:
+• Latest Quarter: <value>
+• Previous Quarter: <value>
+• Same Quarter Last Year: <value>
+
+MARGINS:
+
+EBITDA Margin:
+• Latest Quarter: <value>%
+• Previous Quarter: <value>%
+• Same Quarter Last Year: <value>%
+
+Net Profit Margin:
+• Latest Quarter: <value>%
+• Previous Quarter: <value>%
+• Same Quarter Last Year: <value>%
+
+Use NA only if a value truly does not exist in the document. Do not add any commentary.
+
+---
+
+**MACHINE-READABLE OUTPUT (MANDATORY — append AFTER the human-readable block above):**
+
+After the human-readable text above, on a new line output EXACTLY:
+
+```
+UI_PAYLOAD_START
+```
+
+Then output a single valid JSON object (no commentary before or after) with this exact schema:
+
+{
+  "scrip_code": "<PLACEHOLDER — will be filled by caller>",
+  "company_name": "<extracted company name>",
+  "unit": "<reporting unit, e.g. '₹ Crores', '₹ Lakhs', 'Millions', or 'NA'>",
+  "quarter": "<e.g. 'Dec 2025'>",
+  "raw_analysis": "<PLACEHOLDER — will be filled by caller>",
+  "growth": {
+    "revenue":    {"qoq": <number|null>, "yoy": <number|null>},
+    "ebitda":     {"qoq": <number|null>, "yoy": <number|null>},
+    "net_profit": {"qoq": <number|null>, "yoy": <number|null>}
+  },
+  "absolute_numbers": {
+    "revenue":    {"latest": <number|null>, "previous": <number|null>, "sqly": <number|null>},
+    "ebitda":     {"latest": <number|null>, "previous": <number|null>, "sqly": <number|null>},
+    "net_profit": {"latest": <number|null>, "previous": <number|null>, "sqly": <number|null>}
+  },
+  "margins": {"ebitda_margin": <number|null>, "net_profit_margin": <number|null>},
+  "signal": "<BUY|SELL|HOLD|NEUTRAL>",
+  "confidence": <0-100 integer>
+}
+
+Rules for the JSON:
+- Use plain numbers for growth/margin values (NOT strings with "%").
+- Use null (not "NA") for unavailable numeric values.
+- signal: Based on growth trajectory and margins — BUY if strong growth + expanding margins, SELL if declining, HOLD if mixed, NEUTRAL if insufficient data.
+- confidence: 0-100 integer reflecting data quality and clarity of signal.
+
+Then on a new line output EXACTLY:
+
+```
+UI_PAYLOAD_END
+```
+
+Do NOT add any text between UI_PAYLOAD_START/END other than the JSON object.
+"""
+
+AI_SYSTEM_MESSAGE = (
+    "You are a financial analyst expert. Extract and analyze "
+    "financial data from corporate result documents accurately. "
+    "Follow the output format exactly as specified. "
+    "Always include both human-readable analysis AND the machine-readable "
+    "UI_PAYLOAD JSON block."
+)

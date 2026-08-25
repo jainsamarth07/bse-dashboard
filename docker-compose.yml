@@ -1,0 +1,123 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# BSE Result Analyser — single docker-compose for everything
+#
+# Usage:
+#   docker compose up --build -d              # start all services
+#   docker compose --profile cloudflare up -d cloudflared  # expose web over Cloudflare
+#   docker compose stop                        # stop without removing data
+#   docker compose down -v                     # stop and erase all volumes
+#
+# Copy .env.example → .env and fill in real values before first run.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Database ──────────────────────────────────────────────────────────────
+  # Single Postgres instance for everything — web app tables (users,
+  # broker_keys, orders, watchlist) plus the former MongoDB collections
+  # (stocks, financial_results, seen_announcements, etc.). All *.sql files
+  # in ./sql run once, in filename order, the first time the data volume
+  # is created.
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bse_postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: bse_web
+      POSTGRES_USER: ${PG_USER:-bse_user}
+      POSTGRES_PASSWORD: ${PG_PASS:-bse_pass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    networks:
+      - bse_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER:-bse_user} -d ${PG_DB:-bse_web}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── FastAPI backend ──────────────────────────────────────────────────────────
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: bse_api
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${PG_USER:-bse_user}:${PG_PASS:-bse_pass}@postgres:5432/bse_web
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bse_network
+
+  # ── BSE monitor worker (polls BSE + runs AI analysis) ───────────────────────
+
+  monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: bse_monitor
+    restart: unless-stopped
+    command: ["python", "-m", "jobs.run_monitor"]
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${PG_USER:-bse_user}:${PG_PASS:-bse_pass}@postgres:5432/bse_web
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bse_network
+
+  # ── Next.js dashboard ────────────────────────────────────────────────────────
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: bse_web
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      # NEXT_PUBLIC_API_URL intentionally left empty — Next.js rewrites in
+      # next.config.js proxy /api/* to http://localhost:8000 server-side,
+      # so the browser always calls the same origin (works with any tunnel URL).
+      NEXT_PUBLIC_API_URL: ""
+      INTERNAL_API_URL: "http://api:8000"
+    depends_on:
+      - api
+    networks:
+      - bse_network
+
+  # ── Cloudflare Tunnel (optional public URL on free tier) ──────────────────
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: bse_cloudflared
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "run", "--token", "${CLOUDFLARE_TUNNEL_TOKEN}"]
+    depends_on:
+      - web
+    networks:
+      - bse_network
+    profiles:
+      - cloudflare
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  bse_network:
+    driver: bridge
