@@ -28,11 +28,13 @@ def send_message(text: str) -> None:
     """Send a plain HTML message to the configured Telegram chat."""
     try:
         url = f"https://api.telegram.org/bot{Config.BOT_TOKEN}/sendMessage"
-        requests.post(
+        resp = requests.post(
             url,
             json={"chat_id": Config.CHAT_ID, "text": text, "parse_mode": "HTML"},
             timeout=10,
         )
+        if not resp.ok:
+            print(f"[{_ts()}] ⚠️  Telegram API error {resp.status_code}: {resp.text[:300]}")
     except Exception as exc:
         print(f"[{_ts()}] ⚠️  Telegram send error: {exc}")
 
