@@ -122,7 +122,7 @@ def _call_groq(prompt_text: str) -> str | None:
             ],
             model=Config.GROQ_MODEL,
             temperature=0.1,
-            max_tokens=8_192,
+            max_tokens=4_000,
         )
         choice = completion.choices[0]
         result = choice.message.content
