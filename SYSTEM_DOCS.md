@@ -75,9 +75,9 @@ BseIndiaApi/
 ### MongoDB (`bse_mongodb`)
 - **Image:** `mongo:7`
 - **Port:** `27017`
-- **Credentials:**
-  - Admin: `bseadmin` / `***REMOVED_MONGO_ADMIN_PASSWORD***`
-  - App user: `bse_app` / `***REMOVED_MONGO_APP_PASSWORD***`
+- **Credentials:** set via env vars, never hardcoded
+  - Admin: `bseadmin` / `<admin-password>`
+  - App user: `bse_app` / `<app-password>`
 - **Database:** `bse_india`
 - **Data persisted at:** Docker volume `mongodb_data`
 
@@ -218,10 +218,10 @@ All configuration is at the top of each script:
 | Setting | Location | Value |
 |---------|----------|-------|
 | MongoDB host | `src/db/__init__.py` | `localhost:27017` |
-| MongoDB creds | `src/db/__init__.py` | `bse_app:***REMOVED_MONGO_APP_PASSWORD***` |
-| Telegram Bot Token | Script config | `***REMOVED_TELEGRAM_BOT_ID***:AAG...` |
-| Telegram Chat ID | Script config | `***REMOVED_TELEGRAM_CHAT_ID***` |
-| Groq API Key | Script config | `gsk_pY2h4...` |
+| MongoDB creds | `src/db/__init__.py` | via `MONGO_USER`/`MONGO_PASS` env vars |
+| Telegram Bot Token | Script config | via `BOT_TOKEN` env var |
+| Telegram Chat ID | Script config | via `CHAT_ID` env var |
+| Groq API Key | Script config | via `GROQ_API_KEY` env var |
 | Market cap filter | `src/db/models.py` | `₹500 Cr` |
 | Polling interval | Script `__main__` | `15 seconds` |
 
@@ -231,7 +231,7 @@ You can override MongoDB settings via env vars:
 export MONGO_HOST=localhost
 export MONGO_PORT=27017
 export MONGO_USER=bse_app
-export MONGO_PASS=***REMOVED_MONGO_APP_PASSWORD***
+export MONGO_PASS=<your-mongo-password>
 export MONGO_DB=bse_india
 ```
 
@@ -256,7 +256,7 @@ docker compose down -v
 
 Connect to MongoDB shell:
 ```bash
-docker exec -it bse_mongodb mongosh -u bse_app -p ***REMOVED_MONGO_APP_PASSWORD*** --authenticationDatabase bse_india bse_india
+docker exec -it bse_mongodb mongosh -u bse_app -p <your-mongo-password> --authenticationDatabase bse_india bse_india
 ```
 
 ```javascript

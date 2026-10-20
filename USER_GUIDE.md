@@ -61,20 +61,20 @@ PG_PASS=bse_pass
 
 # ── MongoDB ─────────────────────────────────────────────
 MONGO_ADMIN_USER=bseadmin
-MONGO_ADMIN_PASS=***REMOVED_MONGO_ADMIN_PASSWORD***
+MONGO_ADMIN_PASS=<choose-a-strong-password>
 MONGO_APP_USER=bse_app
-MONGO_APP_PASS=***REMOVED_MONGO_APP_PASSWORD***
+MONGO_APP_PASS=<choose-a-strong-password>
 
 # ── JWT (change in production) ──────────────────────────
 JWT_SECRET=changeme_in_production_to_a_long_random_string
 
 # ── AI APIs ─────────────────────────────────────────────
-GROQ_API_KEY=gsk_...          # from console.groq.com
-GEMINI_API_KEY=AIzaSy...      # from aistudio.google.com
+GROQ_API_KEY=your_groq_api_key_here          # from console.groq.com
+GEMINI_API_KEY=your_gemini_api_key_here      # from aistudio.google.com
 
 # ── Telegram bot ────────────────────────────────────────
-BOT_TOKEN=***REMOVED_TELEGRAM_BOT_ID***:AAG...   # from @BotFather
-CHAT_ID=***REMOVED_TELEGRAM_CHAT_ID***           # group chat ID (negative for groups)
+BOT_TOKEN=your_telegram_bot_token_here       # from @BotFather
+CHAT_ID=your_telegram_chat_id_here           # group chat ID (negative for groups)
 
 # ── Frontend URL (used by Next.js at build time) ─────────
 API_URL=http://localhost:8000
@@ -140,7 +140,7 @@ docker exec bse_api python -m jobs.fetch_market_cap
 docker exec -it bse_api python
 
 # Open a MongoDB shell
-docker exec -it bse_mongodb mongosh -u bseadmin -p ***REMOVED_MONGO_ADMIN_PASSWORD***
+docker exec -it bse_mongodb mongosh -u bseadmin -p <your-mongo-admin-password>
 
 # Open a Postgres shell
 docker exec -it bse_postgres psql -U bse_user -d bse_web

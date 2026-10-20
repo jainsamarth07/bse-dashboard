@@ -224,13 +224,13 @@ Abstraction layer for all MongoDB operations with connection pooling.
 - `get_trading_links(company)` - Generate Groww/Kite/Dhan trading links
 - `main()` - Main loop: fetch → filter → analyze → store → notify
 
-**Configuration**:
-- Groq API Key: `***REMOVED_GROQ_API_KEY***`
+**Configuration** (loaded from environment variables — see `.env.example`):
+- Groq API Key: `GROQ_API_KEY` env var
 - Groq Model: `llama-3.3-70b-versatile`
-- Gemini API Key: `***REMOVED_GEMINI_API_KEY***`
+- Gemini API Key: `GEMINI_API_KEY` env var
 - Gemini Model: `gemini-2.5-flash`
-- Telegram Bot Token: `***REMOVED_TELEGRAM_BOT_TOKEN***`
-- Telegram Chat ID: `***REMOVED_TELEGRAM_CHAT_ID***`
+- Telegram Bot Token: `BOT_TOKEN` env var
+- Telegram Chat ID: `CHAT_ID` env var
 
 **Run**: `python src/integratedResultAnalysisMongo.py` (runs continuously)
 
@@ -373,7 +373,7 @@ High-performance cloud-ready version of the main system.
 1. **MongoDB** (`bse_mongodb`)
    - Image: `mongo:7`
    - Port: 27017
-   - Users: `bseadmin`/`***REMOVED_MONGO_ADMIN_PASSWORD***` (admin), `bse_app`/`***REMOVED_MONGO_APP_PASSWORD***` (app user)
+   - Users: `bseadmin`/`<admin-password>` (admin), `bse_app`/`<app-password>` (app user) — set via env vars, never hardcoded
    - Database: `bse_india`
    - Volume: `mongodb_data` (persistent storage)
 
@@ -444,7 +444,7 @@ python src/integratedResultAnalysisMongo.py
 MONGO_HOST=localhost
 MONGO_PORT=27017
 MONGO_USER=bse_app
-MONGO_PASS=***REMOVED_MONGO_APP_PASSWORD***
+MONGO_PASS=<your-mongo-password>
 MONGO_DB=bse_india
 
 # AI Services
