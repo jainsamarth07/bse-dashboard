@@ -218,19 +218,582 @@
 </div>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="bse.BSE">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bse.</span></span><span class="sig-name descname"><span class="pre">BSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">download_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bse.BSE" title="Link to this definition">¶</a></dt>
+<dd><p>Unofficial Python Api for BSE India</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>download_folder</strong> (<em>pathlib.Path</em><em> or </em><em>str</em>) – A folder/dir to save downloaded files and cookie files</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">download_folder</span></code> is not a folder/dir</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 <section id="general-methods">
 <h2>General Methods<a class="headerlink" href="#general-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.exit">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bse.BSE.exit" title="Link to this definition">¶</a></dt>
+<dd><p>Close the Request session</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.lookup">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">lookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#bse.BSE.lookup" title="Link to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.1.0.</span></p>
+</div>
+<p>Search by Company name, stock symbol, ISIN or BSE code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – A string representing the Company name, Stock symbol, ISIN code or BSE code.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None if lookup failed else a dictionary containing company_name,
+symbol, isin and bse_code. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/lookup.json">Sample response</a></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.getScripName">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">getScripName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scripcode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#bse.BSE.getScripName" title="Link to this definition">¶</a></dt>
+<dd><p>Get stock symbol name for BSE scrip code</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scripcode</strong> – BSE scrip code</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if scrip not found</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Symbol code</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p>Example
+500180 -&gt; ‘HDFCBANK’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.getScripCode">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">getScripCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scripname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bse.BSE.getScripCode" title="Link to this definition">¶</a></dt>
+<dd><p>Get BSE scrip code for stock symbol name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scripname</strong> – Stock symbol code</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if scrip not found</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BSE scrip code</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p>Example
+HDFCBANK -&gt; ‘500180’</p>
+</dd></dl>
+
 </section>
 <section id="download-reports">
 <h2>Download Reports<a class="headerlink" href="#download-reports" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.bhavcopyReport">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">bhavcopyReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bse.BSE.bhavcopyReport" title="Link to this definition">¶</a></dt>
+<dd><p>Download the daily bhavcopy report for specified <code class="docutils literal notranslate"><span class="pre">date</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>datetime.datetime</em>) – date of report</p></li>
+<li><p><strong>folder</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>None</em>) – Optional dir/folder to save the file to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">folder</span></code> is not a dir/folder.</p></li>
+<li><p><strong>RuntimeError</strong> – if report is unavailable or not yet updated.</p></li>
+<li><p><strong>FileNotFoundError</strong> – if file download failed or file is corrupt.</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file path of downloaded report</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pathlib.Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.deliveryReport">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">deliveryReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bse.BSE.deliveryReport" title="Link to this definition">¶</a></dt>
+<dd><p>Download the daily delivery report for specified <code class="docutils literal notranslate"><span class="pre">date</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>datetime.datetime</em>) – date of report</p></li>
+<li><p><strong>folder</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>None</em>) – Optional dir/folder to save the file to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">folder</span></code> is not a dir/folder.</p></li>
+<li><p><strong>RuntimeError</strong> – if report is unavailable or not yet updated.</p></li>
+<li><p><strong>FileNotFoundError</strong> – if file download failed or file is corrupt.</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>file path of downloaded report</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pathlib.Path</p>
+</dd>
+</dl>
+<p>Zip file is extracted, converted to CSV, and saved filepath is returned</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.fetchHistoricalIndexData">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">fetchHistoricalIndexData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'D'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'M'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Y'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'D'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#bse.BSE.fetchHistoricalIndexData" title="Link to this definition">¶</a></dt>
+<dd><p>Download historical data for the specified index for the given date range.</p>
+<p>The data for the entire date range is downloaded as a CSV file and the filepath is returned.</p>
+<p>If the file is empty, None is returned.</p>
+<p>For a list of valid index names, use <a class="reference internal" href="#bse.BSE.fetchIndexNames" title="bse.BSE.fetchIndexNames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchIndexNames()</span></code></a>.</p>
+<p>To download all index data for the data see <a class="reference internal" href="#bse.BSE.fetchAllIndicesDataByDate" title="bse.BSE.fetchAllIndicesDataByDate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchAllIndicesDataByDate()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_date</strong> (<em>datetime.date</em>) – The starting date of the range.</p></li>
+<li><p><strong>to_date</strong> (<em>datetime.date</em>) – The ending date of the range.</p></li>
+<li><p><strong>index</strong> (<em>str</em>) – The index to retrieve data for.</p></li>
+<li><p><strong>period</strong> (<em>Literal</em><em>[</em><em>&quot;D&quot;</em><em>, </em><em>&quot;M&quot;</em><em>, </em><em>&quot;Y&quot;</em><em>]</em>) – Aggregation period.
+“D” for daily, “M” for monthly, “Y” for yearly. Defaults to “D”.</p></li>
+<li><p><strong>folder</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>None</em>) – Optional dir/folder to save the file to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None if file is empty else filepath of the downloaded file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[pathlib.Path]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if <cite>from_date</cite> is greater than <cite>to_date</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="corporate-filings">
 <h2>Corporate Filings<a class="headerlink" href="#corporate-filings" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.announcements">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">announcements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'equity'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'debt'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mf_etf'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'equity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scripcode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'-1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcategory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'-1'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.announcements" title="Link to this definition">¶</a></dt>
+<dd><p>All corporate announcements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_date</strong> (<em>datetime.datetime</em><em> or </em><em>None</em>) – (Optional) From date.</p></li>
+<li><p><strong>to_date</strong> (<em>datetime.datetime</em><em> or </em><em>None</em>) – (Optional) To date.</p></li>
+<li><p><strong>segment</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">equity</span></code>. One of <code class="docutils literal notranslate"><span class="pre">equity</span></code>, <code class="docutils literal notranslate"><span class="pre">debt</span></code> or <code class="docutils literal notranslate"><span class="pre">mf_etf</span></code>.</p></li>
+<li><p><strong>category</strong> (<em>str</em>) – (Optional) Filter announcements by category ex. <code class="docutils literal notranslate"><span class="pre">Corp.</span> <span class="pre">Action</span></code></p></li>
+<li><p><strong>subcategory</strong> (<em>str</em>) – (Optional). Filter announcements by subcategory ex. <code class="docutils literal notranslate"><span class="pre">Dividend</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">from_date</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">to_date</span></code> or <code class="docutils literal notranslate"><span class="pre">subcategory</span></code> argument is passed without <code class="docutils literal notranslate"><span class="pre">category</span></code></p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All announcements. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/announcements.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, list[dict]]</p>
+</dd>
+</dl>
+<p>Response is a dictionary containing <code class="docutils literal notranslate"><span class="pre">Table</span></code> and <code class="docutils literal notranslate"><span class="pre">Table1</span></code> keys.</p>
+<ul class="simple">
+<li><p>Response is paginated. Increment the <code class="docutils literal notranslate"><span class="pre">page_no</span></code> on every call, to get all announcements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Table</span></code> is a list of dictionary announcements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data['Table1'][0]['ROWCNT']</span></code> is an integer total of all announcements. Use this info, to increment <code class="docutils literal notranslate"><span class="pre">page_no</span></code></p></li>
+</ul>
+<p>With no arguments, returns all announcements for current day and time by <code class="docutils literal notranslate"><span class="pre">page_no</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In most cases, it is faster and more bandwidth efficient to lookup
+by <code class="docutils literal notranslate"><span class="pre">scripcode</span></code>.
+Unless you specifically need to download all announcements.
+On a typical day, BSE could have 50+ pages and 2K+ announcements.</p>
+</div>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">from_date</span></code> and <code class="docutils literal notranslate"><span class="pre">to_date</span></code> to return announcements in date range.
+If not provided, the current date and time is considered.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">scripcode</span></code> to return announcements for the specified stock.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">category</span></code> and or <code class="docutils literal notranslate"><span class="pre">subcategory</span></code> to filter announcements.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">subcategory</span></code> is specific to <code class="docutils literal notranslate"><span class="pre">category</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code> is required if <code class="docutils literal notranslate"><span class="pre">subcategory</span></code> is passed.</p></li>
+</ul>
+<p><strong>Available Constants:</strong></p>
+<ul class="simple">
+<li><p><strong>segment</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.SEGMENT</span></code></p></li>
+<li><p><strong>category</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.CATEGORY</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.actions">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">actions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'equity'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'debt'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mf_etf'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'equity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'ex'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'record'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'bc_start'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scripcode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.actions" title="Link to this definition">¶</a></dt>
+<dd><p>All forthcoming corporate actions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>segment</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">equity</span></code>. One of <code class="docutils literal notranslate"><span class="pre">equity</span></code>, <code class="docutils literal notranslate"><span class="pre">debt</span></code> or <code class="docutils literal notranslate"><span class="pre">mf_etf</span></code>.</p></li>
+<li><p><strong>from_date</strong> (<em>datetime.datetime</em>) – (Optional). From date. Defaults to <code class="docutils literal notranslate"><span class="pre">datetime.datetime.now()</span></code></p></li>
+<li><p><strong>to_date</strong> (<em>datetime.datetime</em>) – (Optional). To date. Defaults to <code class="docutils literal notranslate"><span class="pre">datetime.datetime.now()</span></code></p></li>
+<li><p><strong>by_date</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">ex</span></code>. One of <code class="docutils literal notranslate"><span class="pre">ex</span></code>, <code class="docutils literal notranslate"><span class="pre">record</span></code>, <code class="docutils literal notranslate"><span class="pre">bc_start</span></code></p></li>
+<li><p><strong>scripcode</strong> (<em>str</em>) – (Optional) Limit result to stock symbol</p></li>
+<li><p><strong>sector</strong> (<em>str</em>) – (Optional) Limit results to stocks from sector.</p></li>
+<li><p><strong>purpose_code</strong> (<em>str</em>) – Limit result to actions with given purpose</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">from_date</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">to_date</span></code></p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of actions. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/actions.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict]</p>
+</dd>
+</dl>
+<p>With no arguments, returns all forthcoming corp. actions.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">from_date</span></code> and <code class="docutils literal notranslate"><span class="pre">to_date</span></code> to return corp. actions in date range</p>
+<p>By default, actions are returned by Ex date. To change this, specify <code class="docutils literal notranslate"><span class="pre">by_date</span></code> as <code class="docutils literal notranslate"><span class="pre">record</span></code> (record date) or <code class="docutils literal notranslate"><span class="pre">bc_start</span></code> (book closure start date)</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">scripcode</span></code> to return actions for the specified stock.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">sector</span></code> to limit results to stocks in given sector.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">purpose_code</span></code> to limit actions to given purpose ex. <code class="docutils literal notranslate"><span class="pre">P5</span></code> for bonus. Use <code class="docutils literal notranslate"><span class="pre">bse.constants.PURPOSE</span></code> to pass argument.</p>
+<p><strong>Available Constants:</strong></p>
+<ul class="simple">
+<li><p><strong>sector</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.SECTOR</span></code></p></li>
+<li><p><strong>purpose_code</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.PURPOSE</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.resultCalendar">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">resultCalendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scripcode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.resultCalendar" title="Link to this definition">¶</a></dt>
+<dd><p>Corporate result calendar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_date</strong> (<em>datetime.datetime</em>) – (Optional). From date.</p></li>
+<li><p><strong>to_date</strong> (<em>datetime.datetime</em>) – (Optional). To date</p></li>
+<li><p><strong>scripcode</strong> (<em>str</em>) – (Optional). Limit result to stock symbol</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">from_date</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">to_date</span></code></p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of Corporate results. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/resultCalendar.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict]</p>
+</dd>
+</dl>
+<p>With no parameters, returns all forthcoming result dates.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">from_date</span></code> and <code class="docutils literal notranslate"><span class="pre">to_date</span></code> to filter by date range.</p>
+<p>Provide <code class="docutils literal notranslate"><span class="pre">scripcode</span></code> to filter by stock.</p>
+</dd></dl>
+
 </section>
 <section id="market-updates-and-summary">
 <h2>Market Updates and Summary<a class="headerlink" href="#market-updates-and-summary" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.gainers">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">gainers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'group'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'index'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'10'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'5'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'2'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'0'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.gainers" title="Link to this definition">¶</a></dt>
+<dd><p>List of top gainers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>by</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">group</span></code>. One of <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">index</span></code> or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – (Optional). Stock group name or Market index name.</p></li>
+<li><p><strong>pct_change</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">all</span></code>. Filter stocks by percent change. One of <code class="docutils literal notranslate"><span class="pre">10</span></code>, <code class="docutils literal notranslate"><span class="pre">5</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">name</span></code> is not a valid BSE stock group.</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of top gainers by percent change. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/gainers.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict]</p>
+</dd>
+</dl>
+<p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> defaults to BSE stock group <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> defaults to market index <code class="docutils literal notranslate"><span class="pre">S&amp;P</span> <span class="pre">BSE</span> <span class="pre">SENSEX</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> is ignored.</p>
+<p>By default, all stocks are returned. If <code class="docutils literal notranslate"><span class="pre">pct_change</span></code> is provided,
+stocks are filtered by range of percent change.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">10</span></code>: greater than 10%</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span></code>: 5% to 10%</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2</span></code>: 2% to 5%</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>: upto 2%</p></li>
+</ul>
+<p><strong>Available Constants:</strong></p>
+<ul class="simple">
+<li><p><strong>name</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.INDEX</span></code>. Only if <code class="docutils literal notranslate"><span class="pre">by</span></code> is set to <code class="docutils literal notranslate"><span class="pre">index</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.losers">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">losers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'group'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'index'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'10'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'5'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'2'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'0'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.losers" title="Link to this definition">¶</a></dt>
+<dd><p>List of top losers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>by</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">group</span></code>. One of <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">index</span></code> or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – (Optional). Stock group name or Market index name.</p></li>
+<li><p><strong>pct_change</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">all</span></code>. Filter stocks by percent change. One of <code class="docutils literal notranslate"><span class="pre">10</span></code>, <code class="docutils literal notranslate"><span class="pre">5</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">name</span></code> is not a valid BSE stock group.</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of top losers by percent change. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/losers.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict]</p>
+</dd>
+</dl>
+<p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> defaults to BSE stock group <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> defaults to market index <code class="docutils literal notranslate"><span class="pre">S&amp;P</span> <span class="pre">BSE</span> <span class="pre">SENSEX</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> is ignored.</p>
+<p>By default, all stocks are returned. If <code class="docutils literal notranslate"><span class="pre">pct_change</span></code> is provided,
+stocks are filtered by range of percent change.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">10</span></code>: less than -10%</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span></code>: -5% to -10%</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2</span></code>: -2% to -5%</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>: upto -2%</p></li>
+</ul>
+<p><strong>Available Constants:</strong></p>
+<ul class="simple">
+<li><p><strong>name</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.INDEX</span></code>. Only if <code class="docutils literal notranslate"><span class="pre">by</span></code> is set to <code class="docutils literal notranslate"><span class="pre">index</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.near52WeekHighLow">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">near52WeekHighLow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'group'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'index'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.near52WeekHighLow" title="Link to this definition">¶</a></dt>
+<dd><p>Get stocks near 52 week highs and lows</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>by</strong> (<em>str</em>) – Default <code class="docutils literal notranslate"><span class="pre">group</span></code>. One of <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">index</span></code> or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – (Optional). Stock group name or Market index name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">name</span></code> is not a valid BSE stock group.</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Stocks near 52 week high and lows. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/near52WeekHighLow.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">group</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> defaults to BSE stock group <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> defaults to market index <code class="docutils literal notranslate"><span class="pre">S&amp;P</span> <span class="pre">BSE</span> <span class="pre">SENSEX</span></code>.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">by</span></code> is <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code> is ignored.</p></li>
+</ul>
+<p>The result is a dictionary with keys <code class="docutils literal notranslate"><span class="pre">high</span></code> and <code class="docutils literal notranslate"><span class="pre">low</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code> is a list of dictionary containing stocks near 52 week high.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code> is a list of dictionary containing stocks near 52 week low.</p></li>
+</ul>
+<p><strong>Available Constants:</strong></p>
+<ul class="simple">
+<li><p><strong>name</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.INDEX</span></code>. Only if <code class="docutils literal notranslate"><span class="pre">by</span></code> is set to <code class="docutils literal notranslate"><span class="pre">index</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.quote">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scripcode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.quote" title="Link to this definition">¶</a></dt>
+<dd><p>Get OHLC quotes for given scripcode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scripcode</strong> (<em>str</em>) – BSE scrip code</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OHLC data for given scripcode. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/quote.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.quoteWeeklyHL">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">quoteWeeklyHL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scripcode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#bse.BSE.quoteWeeklyHL" title="Link to this definition">¶</a></dt>
+<dd><p>Get 52 week and monthly high &amp; low data for given stock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scripcode</strong> (<em>str</em>) – BSE scrip code</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Weekly and monthly high and lows with dates. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/quoteWeeklyHL.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.listSecurities">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">listSecurities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">industry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scripcode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Equity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Active'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.listSecurities" title="Link to this definition">¶</a></dt>
+<dd><p>List securities and their meta info like symbol code, ISIN code, industry, market cap, segment, group etc.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default parameters will list Group ‘A’ in the ‘equity’ segment with an ‘active’ status.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>industry</strong> (<em>str</em>) – (Optional) Filter by industry name</p></li>
+<li><p><strong>scripcode</strong> (<em>str</em>) – (Optional) BSE scrip code</p></li>
+<li><p><strong>group</strong> (<em>str</em>) – Default ‘A’. BSE stock group</p></li>
+<li><p><strong>segment</strong> – Default ‘Equity’. One of <code class="docutils literal notranslate"><span class="pre">equity</span></code>, <code class="docutils literal notranslate"><span class="pre">mf</span></code>, <code class="docutils literal notranslate"><span class="pre">Preference</span> <span class="pre">Shares</span></code>, <code class="docutils literal notranslate"><span class="pre">Debentures</span> <span class="pre">and</span> <span class="pre">Bonds</span></code>, <code class="docutils literal notranslate"><span class="pre">Equity</span> <span class="pre">-</span> <span class="pre">Institutional</span> <span class="pre">Series</span></code>, <code class="docutils literal notranslate"><span class="pre">Commercial</span> <span class="pre">Papers</span></code></p></li>
+<li><p><strong>status</strong> – Default ‘Active’. One of <code class="docutils literal notranslate"><span class="pre">active</span></code>, <code class="docutils literal notranslate"><span class="pre">suspended</span></code>, or <code class="docutils literal notranslate"><span class="pre">delisted</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">group</span></code> is not a valid BSE stock group</p></li>
+<li><p><strong>TimeoutError</strong> – if request timed out with no response</p></li>
+<li><p><strong>ConnectionError</strong> – in case of HTTP error or server returns error response.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of securities with meta info. <a class="reference external" href="https://github.com/BennyThadikaran/BseIndiaApi/blob/main/src/samples/listSecurities.json">Sample response</a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict]</p>
+</dd>
+</dl>
+<p>With no arguments, returns all active A group equity stocks</p>
+<p><strong>Available Constants:</strong></p>
+<ul class="simple">
+<li><p><strong>industry</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.INDUSTRY</span></code></p></li>
+<li><p><strong>segment</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.SEGMENT</span></code></p></li>
+<li><p><strong>status</strong>: <code class="docutils literal notranslate"><span class="pre">bse.constants.STATUS</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.fetchAllIndicesDataByDate">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">fetchAllIndicesDataByDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.fetchAllIndicesDataByDate" title="Link to this definition">¶</a></dt>
+<dd><p>Fetch daily data for all indices for a given date.</p>
+<p>To download historical index data for a specific index by date range,
+see meth:<cite>.fetchHistoricalIndexData</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<em>datetime.date</em>) – The date for which to fetch index data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary where each key is an index name,
+and each value is a list of dictionaries containing index data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, List[Dict]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.fetchIndexNames">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">fetchIndexNames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.fetchIndexNames" title="Link to this definition">¶</a></dt>
+<dd><p>Fetch the list of Indices to be used in conjunction with <a class="reference internal" href="#bse.BSE.fetchHistoricalIndexData" title="bse.BSE.fetchHistoricalIndexData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchHistoricalIndexData()</span></code></a>.</p>
+<p>Reference: <a class="reference external" href="https://www.bseindia.com/indices/IndexArchiveData.html">https://www.bseindia.com/indices/IndexArchiveData.html</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bse.BSE.fetchIndexReportMetadata">
+<span class="sig-prename descclassname"><span class="pre">BSE.</span></span><span class="sig-name descname"><span class="pre">fetchIndexReportMetadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bse.BSE.fetchIndexReportMetadata" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a dictionary with a <cite>Table</cite> key containing a list of dict.</p>
+<p>The dictionary contains metadata about AllIndices report along with the last updated date.</p>
+<p>Useful to check if the Index data for the latest trading session has been updated.</p>
+<p>Used in conjunction with <a class="reference internal" href="#bse.BSE.fetchHistoricalIndexData" title="bse.BSE.fetchHistoricalIndexData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchHistoricalIndexData()</span></code></a></p>
+<p>Reference: <a class="reference external" href="https://www.bseindia.com/indices/IndexArchiveData.html">https://www.bseindia.com/indices/IndexArchiveData.html</a></p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -292,13 +855,43 @@
 <li><a class="reference internal" href="#">Usage</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#example">Example</a><ul>
-<li><a class="reference internal" href="#api">API</a></li>
+<li><a class="reference internal" href="#api">API</a><ul>
+<li><a class="reference internal" href="#bse.BSE"><code class="docutils literal notranslate"><span class="pre">BSE</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#general-methods">General Methods</a></li>
-<li><a class="reference internal" href="#download-reports">Download Reports</a></li>
-<li><a class="reference internal" href="#corporate-filings">Corporate Filings</a></li>
-<li><a class="reference internal" href="#market-updates-and-summary">Market Updates and Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#general-methods">General Methods</a><ul>
+<li><a class="reference internal" href="#bse.BSE.exit"><code class="docutils literal notranslate"><span class="pre">BSE.exit()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.lookup"><code class="docutils literal notranslate"><span class="pre">BSE.lookup()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.getScripName"><code class="docutils literal notranslate"><span class="pre">BSE.getScripName()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.getScripCode"><code class="docutils literal notranslate"><span class="pre">BSE.getScripCode()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#download-reports">Download Reports</a><ul>
+<li><a class="reference internal" href="#bse.BSE.bhavcopyReport"><code class="docutils literal notranslate"><span class="pre">BSE.bhavcopyReport()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.deliveryReport"><code class="docutils literal notranslate"><span class="pre">BSE.deliveryReport()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.fetchHistoricalIndexData"><code class="docutils literal notranslate"><span class="pre">BSE.fetchHistoricalIndexData()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#corporate-filings">Corporate Filings</a><ul>
+<li><a class="reference internal" href="#bse.BSE.announcements"><code class="docutils literal notranslate"><span class="pre">BSE.announcements()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.actions"><code class="docutils literal notranslate"><span class="pre">BSE.actions()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.resultCalendar"><code class="docutils literal notranslate"><span class="pre">BSE.resultCalendar()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#market-updates-and-summary">Market Updates and Summary</a><ul>
+<li><a class="reference internal" href="#bse.BSE.gainers"><code class="docutils literal notranslate"><span class="pre">BSE.gainers()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.losers"><code class="docutils literal notranslate"><span class="pre">BSE.losers()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.near52WeekHighLow"><code class="docutils literal notranslate"><span class="pre">BSE.near52WeekHighLow()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.quote"><code class="docutils literal notranslate"><span class="pre">BSE.quote()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.quoteWeeklyHL"><code class="docutils literal notranslate"><span class="pre">BSE.quoteWeeklyHL()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.listSecurities"><code class="docutils literal notranslate"><span class="pre">BSE.listSecurities()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.fetchAllIndicesDataByDate"><code class="docutils literal notranslate"><span class="pre">BSE.fetchAllIndicesDataByDate()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.fetchIndexNames"><code class="docutils literal notranslate"><span class="pre">BSE.fetchIndexNames()</span></code></a></li>
+<li><a class="reference internal" href="#bse.BSE.fetchIndexReportMetadata"><code class="docutils literal notranslate"><span class="pre">BSE.fetchIndexReportMetadata()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
